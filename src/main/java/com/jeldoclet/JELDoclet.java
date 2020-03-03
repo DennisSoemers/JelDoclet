@@ -45,6 +45,7 @@ import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Parameter;
 import com.sun.javadoc.ParameterizedType;
@@ -305,11 +306,18 @@ public class JELDoclet
         // NOTE:  Nodes may contain subnodes if classes contain subclasses.
 
         ClassDoc[] classes = root.classes();
-        XMLNode[] retval = new XMLNode[classes.length];
+        final PackageDoc[] packages = root.specifiedPackages();
+
+        XMLNode[] retval = new XMLNode[classes.length + packages.length];
 
         for ( int index = 0; index < classes.length; index++ )
         {
             retval[index] = transformClass( classes[index], null ,JEL_TYPE);
+        }
+        
+        for (int i = 0; i < packages.length; ++i)
+        {
+        	retval[i + classes.length] = transformPackage(packages[i], null, "jelpackage");
         }
 
         return retval;
@@ -740,6 +748,24 @@ public class JELDoclet
             classNode.addNode ( transformClass( innerClasses[classIndex], classNode , JEL_TYPE) );
 
         return classNode;
+    }
+    
+    
+    /**
+     * Transforms a PackageDoc class into XML and adds it to the root XML node.
+     *
+     * @param packageDoc The class to transform.
+     * @param root The XML node to add the package XML to.
+     */
+    private static XMLNode transformPackage(final PackageDoc packageDoc, final XMLNode root, final String type)
+    {
+        XMLNode packageNode = new XMLNode( type );
+
+        transformAnnotations(packageDoc.annotations(), packageNode);
+        packageNode.addAttribute( "type", packageDoc.name() );
+        transformComment( packageDoc, packageNode );
+
+        return packageNode;
     }
 
 
