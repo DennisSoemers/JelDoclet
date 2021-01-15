@@ -511,7 +511,7 @@ public class JELDoclet
 
                 for( int paramTag = 0; paramTag < paramTags.length; paramTag++ )
                 {
-                    if( paramTags[ paramTag ].parameterName().compareToIgnoreCase( params[param].name() ) == 0 )
+                    if( paramTags[ paramTag ].parameterName().compareTo( params[param].name() ) == 0 )
                     {
                         paramNode.addAttribute( "comment", paramTags[ paramTag ].parameterComment() );
                     }
